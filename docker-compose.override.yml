@@ -1,0 +1,21 @@
+services:
+  openclaw-gateway:
+    environment:
+      # Pass Gemini and OpenRouter API keys to the container
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GOOGLE_GENERATIVE_AI_API_KEY: ${GOOGLE_GENERATIVE_AI_API_KEY}
+      OPENROUTER_API_KEY: ${OPEN_ROUTER_API_KEY}
+      # Initial Gateway config
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      # Channels
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+    volumes:
+      - /home/node/.openclaw/extensions
+
+  openclaw-cli:
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GOOGLE_GENERATIVE_AI_API_KEY: ${GOOGLE_GENERATIVE_AI_API_KEY}
+      OPENROUTER_API_KEY: ${OPEN_ROUTER_API_KEY}
+    volumes:
+      - /home/node/.openclaw/extensions

@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.16",
+    "lastTouchedAt": "2026-02-16T15:42:43.936Z"
+  },
+  "logging": {
+    "level": "info",
+    "consoleStyle": "pretty"
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openrouter/openrouter/free"
+      },
+      "workspace": "~/.openclaw/workspace",
+      "compaction": {
+        "mode": "safeguard"
+      }
+    }
+  },
+  "models": {
+    "providers": {
+      "openrouter": {
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "models": [
+          {
+            "id": "openrouter/free",
+            "name": "OpenRouter Free Router",
+            "api": "openai-responses"
+          }
+        ]
+      }
+    }
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "open",
+      "allowFrom": ["*"],
+      "groupPolicy": "allowlist",
+      "streamMode": "partial"
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "36518ae14f39cf04bd3433c060c5cf6a379f17649b2f5c63"
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      }
+    }
+  }
+}
