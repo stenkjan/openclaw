@@ -1,0 +1,14 @@
+time="2026-02-24T12:23:36+01:00" level=warning msg="The \"CLAUDE_AI_SESSION_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-02-24T12:23:36+01:00" level=warning msg="The \"CLAUDE_WEB_SESSION_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-02-24T12:23:36+01:00" level=warning msg="The \"CLAUDE_WEB_COOKIE\" variable is not set. Defaulting to a blank string."
+time="2026-02-24T12:23:36+01:00" level=warning msg="The \"CLAUDE_AI_SESSION_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-02-24T12:23:36+01:00" level=warning msg="The \"CLAUDE_WEB_SESSION_KEY\" variable is not set. Defaulting to a blank string."
+time="2026-02-24T12:23:36+01:00" level=warning msg="The \"CLAUDE_WEB_COOKIE\" variable is not set. Defaulting to a blank string."
+ Container openclaw-openclaw-cli-1 Creating 
+ Container openclaw-openclaw-gateway-1 Recreate 
+ Container openclaw-openclaw-cli-1 Created 
+ Container openclaw-openclaw-gateway-1 Recreated 
+ Container openclaw-openclaw-gateway-1 Starting 
+ Container openclaw-openclaw-cli-1 Starting 
+ Container openclaw-openclaw-cli-1 Started 
+ Container openclaw-openclaw-gateway-1 Started 
