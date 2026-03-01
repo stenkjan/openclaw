@@ -92,6 +92,29 @@ If the Web UI at `https://openclawed.duckdns.org` shows "1008 Disconnected (pair
    docker exec -it openclaw-openclaw-gateway-1 node dist/index.js devices approve <YOUR_PAIRING_ID>
    ```
 
+   ```
+
+### 6. Troubleshooting 502 Bad Gateway & Container Hangs
+
+**Windows SCP Corruption (CRLF)**
+If you edit `.env` or `docker-compose.yml` on a Windows machine and push it to the Linux server using `gcloud compute scp`, Windows will append invisible `\r` carriage returns to every line. This will silently corrupt the port bindings and API keys, causing the Gateway to hang indefinitely on startup or fail to bind to its port, resulting in a **502 Bad Gateway** error.
+
+**To fix Windows file corruption, run this on the server:**
+```bash
+sed -i 's/\r$//' ~/openclaw/.env ~/openclaw/docker-compose.yml
+```
+
+**Docker "Ghost IPs" / Network Desync**
+Do NOT repeatedly run `docker compose restart`. Forcefully recreating the container multiple times can cause the Docker network bridge to desync, leaving Caddy trying to route your domain traffic to an old, non-existent "Ghost IP" for the container. 
+
+**To fix a completely broken Docker network and 502 error:**
+```bash
+cd ~/openclaw
+docker compose down      # Destroys the corrupted network bridge
+docker compose up -d     # Rebuilds the network cleanly
+sudo systemctl restart caddy # Forces Caddy to rescan for the new IP
+```
+
 ---
 
 ## Part 3: File Sharing & Workflows
