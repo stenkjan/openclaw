@@ -17,12 +17,27 @@ gcloud compute instances stop openclaw-server --zone=us-central1-a
 ---
 
 > [!IMPORTANT]
-> After every container restart, the container IP may change. If the website shows a 502 error, run the Caddy fix in Section 7.
+> The VM gets a **new external IP** on every start. Update DuckDNS (Section 1b) after starting the VM, or the domain will point to the wrong IP.
 
 ## 2. SSH into the Server
 
 ```bash
 gcloud compute ssh openclaw-server --project=durable-works-488417-t7 --zone=us-central1-a
+```
+
+---
+
+## 1b. Update DuckDNS After Start
+
+GCP assigns a **new external IP** on every VM start. Update DuckDNS immediately after starting:
+
+1. Go to **https://www.duckdns.org** and log in
+2. Update `openclawed` to the new IP shown in the `gcloud instances start` output
+
+Or run from Cloud Shell:
+```bash
+# Get the new external IP
+gcloud compute instances describe openclaw-server --zone=us-central1-a --format='get(networkInterfaces[0].accessConfigs[0].natIP)'
 ```
 
 ---
@@ -33,6 +48,19 @@ gcloud compute ssh openclaw-server --project=durable-works-488417-t7 --zone=us-c
 cd openclaw
 docker compose up -d
 ```
+
+---
+
+## 3b. Fix Docker Networking After Cold Start [SERVER]
+
+If `docker compose up -d` fails with `operation not supported` on veth pair creation, Docker's network driver didn't survive the VM restart. Fix:
+
+```bash
+sudo systemctl restart docker
+docker compose up -d
+```
+
+> After Docker restarts, proceed with `docker compose up -d` normally. No Caddy fix needed — container uses a static IP.
 
 ---
 
@@ -87,24 +115,26 @@ sudo systemctl restart caddy
 
 ---
 
-## 7. Fix Caddy After Container Restart [SERVER]
+## 7. Caddy Config [SERVER]
 
-OpenClaw binds to the container's internal IP (`172.18.x.x`), not `localhost`.
-If the website shows 502, the container IP has changed. Fix it like this:
+OpenClaw runs in `mode: local`, meaning it binds to `127.0.0.1` inside the container.
+Caddy must proxy via Docker's port mapping (`127.0.0.1:18789` on the host), **not** the container IP directly.
 
-```bash
-# 1. Get the current container IP
-NEW_IP=$(docker inspect openclaw-openclaw-gateway-1 --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
-echo "Container IP: $NEW_IP"
+The Caddyfile should always contain:
 
-# 2. Update Caddyfile with correct multiline format
-cat << EOF | sudo tee /etc/caddy/Caddyfile
+```
 openclawed.duckdns.org {
-    reverse_proxy ${NEW_IP}:18789
+    reverse_proxy 127.0.0.1:18789
+}
+```
+
+To restore it:
+```bash
+cat <<EOF | sudo tee /etc/caddy/Caddyfile
+openclawed.duckdns.org {
+    reverse_proxy 127.0.0.1:18789
 }
 EOF
-
-# 3. Restart Caddy
 sudo systemctl restart caddy
 ```
 
@@ -125,7 +155,8 @@ sudo systemctl restart caddy
 
 | Item | Value |
 |---|---|
-| Server IP | `136.119.144.181` |
+| Server IP | dynamic — check after each start with `gcloud compute instances describe` |
+| Container IP | `172.20.0.10` (static) — but Caddy uses `127.0.0.1:18789` via Docker port mapping |
 | Domain | `openclawed.duckdns.org` |
 | OpenClaw Port | `18789` |
 | GCP Project | `durable-works-488417-t7` |
