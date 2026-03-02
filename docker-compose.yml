@@ -53,7 +53,7 @@ services:
     stdin_open: true
     tty: true
     init: true
-    entrypoint: ["node", "dist/index.js"]
+    entrypoint: ["tail", "-f", "/dev/null"]
 
 networks:
   openclaw_net:
