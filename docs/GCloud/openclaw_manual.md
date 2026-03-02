@@ -115,6 +115,18 @@ docker compose up -d     # Rebuilds the network cleanly
 sudo systemctl restart caddy # Forces Caddy to rescan for the new IP
 ```
 
+**CLI Container Crash (Exit Code 1)**
+If `docker ps -a` shows `openclaw-openclaw-cli-1` with `Exited (1)`, the network bridge breaks and leads to a looping 502 error on the Gateway. This happens if the CLI container has no background command preventing it from closing immediately.
+
+**To fix the CLI crash loop on the server:**
+```bash
+nano ~/openclaw/docker-compose.yml
+# Find the line under openclaw-cli that says: entrypoint: ["node", "dist/index.js"]
+# Replace it with: entrypoint: ["tail", "-f", "/dev/null"]
+# Save (Ctrl+o, Enter), Exit (Ctrl+x)
+docker compose up -d
+```
+
 ---
 
 ## Part 3: File Sharing & Workflows
