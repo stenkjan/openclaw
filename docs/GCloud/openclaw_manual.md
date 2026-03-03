@@ -46,6 +46,15 @@ These commands must be run inside your SSH session on the remote server.
 
 If you just started the VM, Docker's veth pairs might be broken, and the volume permissions need to be universal.
 
+
+```PAIR NEW DEVICE TOKEN
+
+"""""""""""""""""""""""""
+36518ae14f39cf04bd3433c060c5cf6a379f17649b2f5c63
+""""""""""""""""""""""""
+```
+
+
 ```bash
 # Fix write permissions for the container
 sudo chmod -R 777 ~/openclaw
