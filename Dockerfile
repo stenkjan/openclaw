@@ -16,6 +16,14 @@ RUN if [ -n "$OPENCLAW_DOCKER_APT_PACKAGES" ]; then \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
     fi
 
+# Permanently install gogcli for Google Workspace integrations
+RUN curl -L https://github.com/steipete/gogcli/releases/download/v0.12.0/gogcli_0.12.0_linux_amd64.tar.gz -o /tmp/gog.tar.gz \
+    && tar -xzf /tmp/gog.tar.gz -C /usr/local/bin/ \
+    && mv /usr/local/bin/gogcli /usr/local/bin/gog \
+    && chmod +x /usr/local/bin/gog \
+    && rm /tmp/gog.tar.gz
+
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY ui/package.json ./ui/package.json
 COPY patches ./patches
